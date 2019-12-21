@@ -6,9 +6,11 @@ A Nim wrapper for the WooCommerce REST API. Easily interact with the WooCommerce
 Installation
 ------------
 
-.. code-block:: bash
-
-    nimble install woocommerce
+```bash
+git clone https://github.com/mrhdias/woocommerce-api-nim
+cd woocommerce-api-nim
+nimble install
+```
 
 Getting started
 ---------------
@@ -20,12 +22,12 @@ Check out the WooCommerce API endpoints and data that can be manipulated in http
 Setup
 -----
 
-.. code-block:: nim
+```nim
+import woocommerce/AsyncAPI
 
-    import woocommerce/AsyncAPI
-
-    let wcapi = await API(
-        url="http://example.com",
-        consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-    )
+let wcapi = await API(
+    url="http://example.com",
+    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+)
+```

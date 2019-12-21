@@ -54,6 +54,11 @@ await wcapi.put(endpoint: string, data: string)
 # Delete
 await wcapi.delete(endpoint: string; params: Table) # params is optional
 ```
+* OPTIONS
+```nim
+# JSON Schema
+await wcapi.options(endpoint: string)
+```
 
 Response
 --------

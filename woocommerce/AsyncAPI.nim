@@ -48,54 +48,48 @@ proc params_to_query_string(params: Table): string =
 #
 proc get*(wcapi: WCAPI, endpoint: string, params: Table = initTable[string, string]()): Future[AsyncResponse] {.async.} =
     let query_string = params_to_query_string(params)
-    let response = await wcapi.client.request(
+    return await wcapi.client.request(
         join([wcapi.url, "wp-json/wc/v3", if query_string.len > 0: join([endpoint, query_string], "?") else: endpoint], "/"),
         httpMethod = HttpGet
     )
-    return response
 
 #
 # Create
 #
 proc post*(wcapi: WCAPI, endpoint: string, data: string): Future[AsyncResponse] {.async.} =
     wcapi.client.headers.add("Content-Type", "application/json; charset=UTF-8")
-    let response = await wcapi.client.request(
+    return await wcapi.client.request(
         join([wcapi.url, "wp-json/wc/v3", endpoint], "/"),
         httpMethod = HttpPost,
         body = data
     )
-    return response
 
 #
 # Update
 #
 proc put*(wcapi: WCAPI, endpoint: string, data: string): Future[AsyncResponse] {.async.} =
     wcapi.client.headers.add("Content-Type", "application/json; charset=UTF-8")
-    let response = await wcapi.client.request(
+    return await wcapi.client.request(
         join([wcapi.url, "wp-json/wc/v3", endpoint], "/"),
         httpMethod = HttpPut,
         body = data
     )
-    return response
-
 
 #
 # Delete
 #
 proc delete*(wcapi: WCAPI, endpoint: string, params: Table = initTable[string, string]()): Future[AsyncResponse] {.async.} =
     let query_string = params_to_query_string(params)
-    let response = await wcapi.client.request(
+    return await wcapi.client.request(
         join([wcapi.url, "wp-json/wc/v3", if query_string.len > 0: join([endpoint, query_string], "?") else: endpoint], "/"),
         httpMethod = HttpDelete
     )
-    return response
 
 #
 # JSON Schema
 #
 proc options*(wcapi: WCAPI, endpoint: string): Future[AsyncResponse] {.async.} =
-    let response = await wcapi.client.request(
+    return await wcapi.client.request(
         join([wcapi.url, "wp-json/wc/v3", endpoint], "/"),
         httpMethod = HttpOptions
     )
-    return response

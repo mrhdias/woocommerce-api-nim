@@ -90,7 +90,9 @@ proc delete*(wcapi: WCAPI, endpoint: string, params: Table = initTable[string, s
     )
     return response
 
-
+#
+# JSON Schema
+#
 proc options*(wcapi: WCAPI, endpoint: string): Future[AsyncResponse] {.async.} =
     let response = await wcapi.client.request(
         join([wcapi.url, "wp-json/wc/v3", endpoint], "/"),

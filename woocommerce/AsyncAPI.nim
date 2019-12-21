@@ -1,6 +1,8 @@
 #
+# References:
 # http://woocommerce.github.io/woocommerce-rest-api-docs/
 # https://pypi.org/project/WooCommerce/
+# https://github.com/woocommerce/wc-api-php/blob/master/src/WooCommerce/Client.php
 #
 
 import strutils
@@ -89,3 +91,9 @@ proc delete*(wcapi: WCAPI, endpoint: string, params: Table = initTable[string, s
     return response
 
 
+proc options*(wcapi: WCAPI, endpoint: string): Future[AsyncResponse] {.async.} =
+    let response = await wcapi.client.request(
+        join([wcapi.url, "wp-json/wc/v3", endpoint], "/"),
+        httpMethod = HttpOptions
+    )
+    return response

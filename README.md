@@ -31,6 +31,29 @@ let wcapi = await API(
     consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 )
 ```
+Methods
+-------
+
+* GET
+```nim
+# Retrieve
+await wcapi.get(endpoint: string; params: Table) # params is optional
+```
+* POST
+```nim
+# Create
+await wcapi.post(endpoint: string, data: string)
+```
+* PUT
+```nim
+# Update
+await wcapi.put(endpoint: string, data: string)
+```
+* DELETE
+```nim
+# Delete
+await wcapi.delete(endpoint: string; params: Table) # params is optional
+```
 
 Response
 --------

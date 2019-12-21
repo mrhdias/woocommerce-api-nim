@@ -31,3 +31,64 @@ let wcapi = await API(
     consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 )
 ```
+
+Response
+--------
+
+All methods will return [Response](https://nim-lang.org/docs/httpclient.html#AsyncResponse) object.
+
+Example of returned data:
+
+```nim
+import woocommerce/AsyncAPI
+import tables
+import json
+
+proc main() {.async.} =
+    let wcapi = await API(
+        url="http://example.com",
+        consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    )
+
+    response = await wcapi.get("products?status=publish&per_page=10&page=1")
+    echo response.status
+    if response.status == "200 OK":
+        let products = parseJson(await response.body)
+        for product in products:
+            echo "SKU:", product["sku"], " NAME:", product["name"]
+
+    wcapi.close()
+
+waitFor main()
+```
+
+Request with `params` example
+-----------------------------
+
+```nim
+import woocommerce/AsyncAPI
+import tables
+import json
+
+proc main() {.async.} =
+    let wcapi = await API(
+        url="http://example.com",
+        consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    )
+
+    response = await wcapi.get(
+        "products",
+        params = {"status": "publish", "per_page": $(10), "page": $(2)}.toTable
+    )
+    echo response.status
+    if response.status == "200 OK":
+        let products = parseJson(await response.body)
+        for product in products:
+            echo "SKU:", product["sku"], " NAME:", product["name"]
+
+    wcapi.close()
+
+waitFor main()
+```

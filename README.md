@@ -46,6 +46,13 @@ let wcapi = AsyncAPI(
 Methods
 -------
 
+Params       | Type         | Description
+------------ | ------------ | ------------
+``endpoint`` | ``string`` | WooCommerce API endpoint, example: ``products`` or ``order/12``
+``data`` | ``string`` | JSON data stringified
+``params`` | ``Table[string, string]`` | Accepts ``params`` to be passed as a query string
+
+
 * GET
 ```nim
 # Retrieve

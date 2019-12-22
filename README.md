@@ -81,6 +81,7 @@ Example of returned data for asynchronous API:
 
 ```nim
 import woocommerce/API
+import asyncdispatch
 import tables
 import json
 
@@ -94,7 +95,7 @@ proc main() {.async.} =
     response = await wcapi.get("products?status=publish&per_page=10&page=1")
     echo response.status
     if response.status == "200 OK":
-        let products = parseJson(await response.body)
+        let products = parseJson(response.body)
         for product in products:
             echo "SKU:", product["sku"], " NAME:", product["name"]
 
@@ -108,6 +109,7 @@ Request with `params` example
 
 ```nim
 import woocommerce/API
+import asyncdispatch
 import tables
 import json
 
@@ -124,7 +126,7 @@ proc main() {.async.} =
     )
     echo response.status
     if response.status == "200 OK":
-        let products = parseJson(await response.body)
+        let products = parseJson(response.body)
         for product in products:
             echo "SKU:", product["sku"], " NAME:", product["name"]
 

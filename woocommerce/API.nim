@@ -27,8 +27,13 @@ type
         version: string
         client: AsyncHttpClient
 
+type
+    APIVersionError = object of Exception
 
 proc API*(url, consumer_key, consumer_secret: string, version: string = "wc/v3"): WCAPI =
+
+    if version != "wc/v3":
+        raise newException(APIVersionError, "Only wc/v3 API version is supported")
 
     let basic = join(["Basic", encode(join([consumer_key, consumer_secret], ":"))], " ")
     let client = newHttpClient()
@@ -49,6 +54,9 @@ proc API*(url, consumer_key, consumer_secret: string, version: string = "wc/v3")
 
 
 proc AsyncAPI*(url, consumer_key, consumer_secret: string, version: string = "wc/v3"): AsyncWCAPI =
+
+    if version != "wc/v3":
+        raise newException(APIVersionError, "Only wc/v3 API version is supported")
 
     let basic = join(["Basic", encode(join([consumer_key, consumer_secret], ":"))], " ")
     let client = newAsyncHttpClient()

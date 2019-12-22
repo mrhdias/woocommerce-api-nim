@@ -1,7 +1,7 @@
 WooCommerce API - Nim Client
 ===============================
 
-A Nim wrapper for the WooCommerce REST API. Easily interact with the WooCommerce REST API using this library.
+A [Nim](https://nim-lang.org/) wrapper for the [WooCommerce REST API](http://woocommerce.github.io/woocommerce-rest-api-docs/). Easily interact with the WooCommerce REST API using this library.
 
 Installation
 ------------

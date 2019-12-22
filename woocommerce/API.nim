@@ -37,9 +37,12 @@ proc API*(url, consumer_key, consumer_secret: string, version: string = "wc/v3")
         "User-Agent": &"WooCommerce API - {defUserAgent}",
         "Authorization": basic
     })
-
+    
+    var cleaned_url = url
+    cleaned_url.removeSuffix("/")
+    
     return WCAPI(
-        url: url,
+        url: cleaned_url,
         version: version,
         client: client
     )
@@ -55,8 +58,11 @@ proc AsyncAPI*(url, consumer_key, consumer_secret: string, version: string = "wc
         "Authorization": basic
     })
 
+    var cleaned_url = url
+    cleaned_url.removeSuffix("/")
+
     return AsyncWCAPI(
-        url: url,
+        url: cleaned_url,
         version: version,
         client: client
     )

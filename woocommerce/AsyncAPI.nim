@@ -7,32 +7,62 @@
 
 import strutils
 import base64
-import asyncdispatch
 import httpclient
 import json
 import tables
 import strformat
+import asyncdispatch
 
-export asyncdispatch
 export httpclient
 
 type
     WCAPI = ref object
         url: string
+        version: string
+        client: HttpClient
+
+type
+    AsyncWCAPI = ref object
+        url: string
+        version: string
         client: AsyncHttpClient
 
-proc API*(url, consumer_key, consumer_secret: string): Future[WCAPI] {.async.} =
+
+proc API*(url, consumer_key, consumer_secret: string, version: string = "wc/v3"): WCAPI =
 
     let basic = join(["Basic", encode(join([consumer_key, consumer_secret], ":"))], " ")
-    let client = newAsyncHttpClient()
+    let client = newHttpClient()
+    
     client.headers = newHttpHeaders({
         "User-Agent": &"WooCommerce API - {defUserAgent}",
         "Authorization": basic
     })
 
-    return WCAPI(url: url, client: client)
+    return WCAPI(
+        url: url,
+        version: version,
+        client: client
+    )
 
-proc close*(wcapi: WCAPI) =
+
+proc AsyncAPI*(url, consumer_key, consumer_secret: string, version: string = "wc/v3"): AsyncWCAPI =
+
+    let basic = join(["Basic", encode(join([consumer_key, consumer_secret], ":"))], " ")
+    let client = newAsyncHttpClient()
+    
+    client.headers = newHttpHeaders({
+        "User-Agent": &"WooCommerce API - {defUserAgent}",
+        "Authorization": basic
+    })
+
+    return AsyncWCAPI(
+        url: url,
+        version: version,
+        client: client
+    )
+
+
+proc close*(wcapi: WCAPI | AsyncWCAPI) =
     wcapi.client.close()
 
 
@@ -46,50 +76,85 @@ proc params_to_query_string(params: Table): string =
 #
 # Retrieve
 #
-proc get*(wcapi: WCAPI, endpoint: string, params: Table = initTable[string, string]()): Future[AsyncResponse] {.async.} =
+proc get*(
+    wcapi: WCAPI | AsyncWCAPI,
+    endpoint: string,
+    params: Table = initTable[string, string]()): Future[Response | AsyncResponse] {.multisync.} =
+
     let query_string = params_to_query_string(params)
-    return await wcapi.client.request(
-        join([wcapi.url, "wp-json/wc/v3", if query_string.len > 0: join([endpoint, query_string], "?") else: endpoint], "/"),
-        httpMethod = HttpGet
+    let url = join(
+        [wcapi.url, "wp-json", wcapi.version, if query_string.len > 0: join([endpoint, query_string], "?") else: endpoint],
+        "/"
     )
+
+    when wcapi.client is AsyncHttpClient:
+        return await wcapi.client.request(url, httpMethod=HttpGet)
+    else:
+        return wcapi.client.request(url, httpMethod=HttpGet)
+
 
 #
 # Create
 #
-proc post*(wcapi: WCAPI, endpoint: string, data: string): Future[AsyncResponse] {.async.} =
+proc post*(
+    wcapi: WCAPI | AsyncWCAPI,
+    endpoint: string,
+    data: string): Future[Response | AsyncResponse] {.multisync.} =
+
     wcapi.client.headers.add("Content-Type", "application/json; charset=UTF-8")
-    return await wcapi.client.request(
-        join([wcapi.url, "wp-json/wc/v3", endpoint], "/"),
-        httpMethod = HttpPost,
-        body = data
-    )
+    let url = join([wcapi.url, "wp-json", wcapi.version, endpoint], "/")
+
+    when wcapi.client is AsyncHttpClient:
+        return await wcapi.client.request(url, httpMethod=HttpPost, body=data)
+    else:
+        return wcapi.client.request(url, httpMethod=HttpPost, body=data)
 
 #
 # Update
 #
-proc put*(wcapi: WCAPI, endpoint: string, data: string): Future[AsyncResponse] {.async.} =
+proc put*(
+    wcapi: WCAPI | AsyncWCAPI,
+    endpoint: string,
+    data: string): Future[Response | AsyncResponse] {.multisync.} =
+
     wcapi.client.headers.add("Content-Type", "application/json; charset=UTF-8")
-    return await wcapi.client.request(
-        join([wcapi.url, "wp-json/wc/v3", endpoint], "/"),
-        httpMethod = HttpPut,
-        body = data
-    )
+    let url = join([wcapi.url, "wp-json", wcapi.version, endpoint], "/")
+
+    when wcapi.client is AsyncHttpClient:
+        return await wcapi.client.request(url, httpMethod=HttpPut, body=data)
+    else:
+        return wcapi.client.request(url, httpMethod=HttpPut, body=data)
 
 #
 # Delete
 #
-proc delete*(wcapi: WCAPI, endpoint: string, params: Table = initTable[string, string]()): Future[AsyncResponse] {.async.} =
+proc delete*(
+    wcapi: WCAPI | AsyncWCAPI,
+    endpoint: string,
+    params: Table = initTable[string, string]()): Future[Response | AsyncResponse] {.multisync.} =
+
     let query_string = params_to_query_string(params)
-    return await wcapi.client.request(
-        join([wcapi.url, "wp-json/wc/v3", if query_string.len > 0: join([endpoint, query_string], "?") else: endpoint], "/"),
-        httpMethod = HttpDelete
+    let url = join(
+        [wcapi.url, "wp-json", wcapi.version, if query_string.len > 0: join([endpoint, query_string], "?") else: endpoint],
+        "/"
     )
+
+    when wcapi.client is AsyncHttpClient:
+        return await wcapi.client.request(url, httpMethod=HttpDelete)
+    else:
+        return wcapi.client.request(url, httpMethod=HttpDelete)
 
 #
 # JSON Schema
 #
-proc options*(wcapi: WCAPI, endpoint: string): Future[AsyncResponse] {.async.} =
-    return await wcapi.client.request(
-        join([wcapi.url, "wp-json/wc/v3", endpoint], "/"),
-        httpMethod = HttpOptions
-    )
+proc options*(
+    wcapi: WCAPI | AsyncWCAPI,
+    endpoint: string): Future[Response | AsyncResponse] {.multisync.} =
+
+    let url = join([wcapi.url, "wp-json", wcapi.version, endpoint], "/")
+
+    when wcapi.client is AsyncHttpClient:
+        return await wcapi.client.request(url, httpMethod=HttpOptions)
+    else:
+        return wcapi.client.request(url, httpMethod=HttpOptions)
+ 

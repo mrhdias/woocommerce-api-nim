@@ -5,6 +5,7 @@ import os
 import woocommerce/API
 import tables
 import json
+import rdstdin
 
 proc main() =
 
@@ -35,15 +36,21 @@ export WCAPI_CONSUMER_SECRET=cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
         "has_archives": false
     }
 
-    var response = wcapi.post("products/attributes", $data)
-    echo response.status
-    if response.status == "201 Created":
-        echo parseJson(response.body)
+    let input_response = readLineFromStdin "Create test attribute? [y/n]: "
 
-    response = wcapi.get("products/attributes")
-    echo response.status
-    if response.status == "200 OK":
-        echo parseJson(response.body)
+    if input_response == "y" or input_response == "Y":
+        var response = wcapi.post("products/attributes", $data)
+        echo response.status
+        if response.status == "201 Created":
+            echo parseJson(response.body)
+
+        response = wcapi.get("products/attributes")
+        echo response.status
+        if response.status == "200 OK":
+            echo parseJson(response.body)
+    else:
+        echo "Test canceled!"
+        quit()
 
     wcapi.close()
 

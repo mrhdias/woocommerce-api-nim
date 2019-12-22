@@ -33,7 +33,7 @@ export WCAPI_CONSUMER_SECRET=cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     echo response.version
     echo response.headers["content-type"]
     if response.status == "200 OK":
-        let products = parseJson(response.body)
+        let products = parseJson(await response.body)
         for product in products:
             echo "SKU:", product["sku"], " NAME:", product["name"]
 

@@ -22,10 +22,22 @@ Check out the WooCommerce API endpoints and data that can be manipulated in http
 Setup
 -----
 
+* Synchronous API
 ```nim
-import woocommerce/AsyncAPI
+import woocommerce/API
 
-let wcapi = await API(
+let wcapi = API(
+    url="http://example.com",
+    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+)
+```
+
+* Asynchronous API
+```nim
+import woocommerce/API
+
+let wcapi = AsyncAPI(
     url="http://example.com",
     consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -37,43 +49,43 @@ Methods
 * GET
 ```nim
 # Retrieve
-await wcapi.get(endpoint: string; params: Table) # params is optional
+wcapi.get(endpoint: string; params: Table) # params is optional
 ```
 * POST
 ```nim
 # Create
-await wcapi.post(endpoint: string, data: string)
+wcapi.post(endpoint: string, data: string)
 ```
 * PUT
 ```nim
 # Update
-await wcapi.put(endpoint: string, data: string)
+wcapi.put(endpoint: string, data: string)
 ```
 * DELETE
 ```nim
 # Delete
-await wcapi.delete(endpoint: string; params: Table) # params is optional
+wcapi.delete(endpoint: string; params: Table) # params is optional
 ```
 * OPTIONS
 ```nim
 # JSON Schema
-await wcapi.options(endpoint: string)
+wcapi.options(endpoint: string)
 ```
 
 Response
 --------
 
-All methods will return [Response](https://nim-lang.org/docs/httpclient.html#AsyncResponse) object.
+All methods will return [Response](https://nim-lang.org/docs/httpclient.html#Response) / [AsyncResponse](https://nim-lang.org/docs/httpclient.html#AsyncResponse) object.
 
-Example of returned data:
+Example of returned data for asynchronous API:
 
 ```nim
-import woocommerce/AsyncAPI
+import woocommerce/API
 import tables
 import json
 
 proc main() {.async.} =
-    let wcapi = await API(
+    let wcapi = AsyncAPI(
         url="http://example.com",
         consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -95,12 +107,12 @@ Request with `params` example
 -----------------------------
 
 ```nim
-import woocommerce/AsyncAPI
+import woocommerce/API
 import tables
 import json
 
 proc main() {.async.} =
-    let wcapi = await API(
+    let wcapi = AsyncAPI(
         url="http://example.com",
         consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
         consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"

@@ -1,35 +1,50 @@
 #
 # nim c -d:ssl -p=./ -r tests/post.nim 
 #
-import woocommerce/AsyncAPI
+import os
+import woocommerce/API
 import tables
 import json
 
-proc main() {.async.} =
-  let wcapi = await API(
-    url="http://example.com",
-    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-  )
+proc main() =
 
-  let data = %* {
-    "name": "TestAttribute",
-    "slug": "pa_testattribute",
-    "type": "select",
-    "order_by": "menu_order",
-    "has_archives": false
-  }
+    if not (existsEnv("WCAPI_URL") and existsEnv("WCAPI_CONSUMER_KEY") and existsEnv("WCAPI_CONSUMER_SECRET")):
+        echo """
+Set manually the following environment variables to run the tests:
+export WCAPI_URL=http://example.com
+export WCAPI_CONSUMER_KEY=ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+export WCAPI_CONSUMER_SECRET=cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+"""
+        quit()
 
-  var response = await wcapi.post("products/attributes", $data)
-  echo response.status
-  if response.status == "201 Created":
-    echo parseJson(await response.body)
+    let url = getEnv("WCAPI_URL")
+    let consumer_key = getEnv("WCAPI_CONSUMER_KEY")
+    let consumer_secret = getEnv("WCAPI_CONSUMER_SECRET")
 
-  response = await wcapi.get("products/attributes")
-  echo response.status
-  if response.status == "200 OK":
-    echo parseJson(await response.body)
+    let wcapi = API(
+        url=url,
+        consumer_key=consumer_key,
+        consumer_secret=consumer_secret
+    )
 
-  wcapi.close()
+    let data = %* {
+        "name": "TestAttribute",
+        "slug": "pa_testattribute",
+        "type": "select",
+        "order_by": "menu_order",
+        "has_archives": false
+    }
 
-waitFor main()
+    var response = wcapi.post("products/attributes", $data)
+    echo response.status
+    if response.status == "201 Created":
+        echo parseJson(response.body)
+
+    response = wcapi.get("products/attributes")
+    echo response.status
+    if response.status == "200 OK":
+        echo parseJson(response.body)
+
+    wcapi.close()
+
+main()

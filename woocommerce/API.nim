@@ -30,13 +30,13 @@ type
 type
     APIVersionError = object of Exception
 
-proc API*(url, consumer_key, consumer_secret: string, version: string = "wc/v3"): WCAPI =
+proc API*(url, consumer_key, consumer_secret: string, version: string = "wc/v3", timeout: int = -1): WCAPI =
 
     if version != "wc/v3":
         raise newException(APIVersionError, "Only wc/v3 API version is supported")
 
     let basic = join(["Basic", encode(join([consumer_key, consumer_secret], ":"))], " ")
-    let client = newHttpClient()
+    let client = newHttpClient(timeout=timeout)
     
     client.headers = newHttpHeaders({
         "User-Agent": &"WooCommerce API - {defUserAgent}",

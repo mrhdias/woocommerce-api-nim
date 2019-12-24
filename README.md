@@ -27,9 +27,9 @@ Setup
 import woocommerce/API
 
 let wcapi = API(
-    url="http://example.com",
-    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    url="http://example.com", # Your store URL
+    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", # Your consumer key
+    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" # Your consumer secret
 )
 ```
 

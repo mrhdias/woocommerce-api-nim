@@ -130,7 +130,7 @@ proc main() =
 
     let feed_filepath = conf.getSectionValue("Feed", "save")
     if not (feed_filepath.len >= 4 and feed_filepath.endsWith(".xml")):
-        echo "The feed file does not exist in the ini configuration."
+        echo "The feed file does not exist in the ini configuration file."
         quit()
 
     let pathSplit = splitPath(feed_filepath)

@@ -26,7 +26,7 @@ export WCAPI_CONSUMER_SECRET=cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     consumer_secret=consumer_secret
   )
   
-  let response = wcapi.get("products", params = {"status": "publish", "per_page": $(10), "page": $(1)})
+  let response = wcapi.get("products", params = @{"status": "publish", "per_page": $(10), "page": $(1)})
   echo response.status
   echo response.version
   echo response.headers["content-type"]

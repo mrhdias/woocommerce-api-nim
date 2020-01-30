@@ -27,9 +27,9 @@ Setup
 import woocommerce/API
 
 let wcapi = API(
-    url="http://example.com", # Your store URL
-    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", # Your consumer key
-    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" # Your consumer secret
+  url="http://example.com", # Your store URL
+  consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", # Your consumer key
+  consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" # Your consumer secret
 )
 ```
 
@@ -38,9 +38,9 @@ let wcapi = API(
 import woocommerce/API
 
 let wcapi = AsyncAPI(
-    url="http://example.com",
-    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  url="http://example.com",
+  consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+  consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 )
 ```
 Methods
@@ -50,13 +50,13 @@ Params       | Type         | Description
 ------------ | ------------ | ------------
 ``endpoint`` | ``string`` | WooCommerce API endpoint, example: ``products`` or ``order/12``
 ``data`` | ``string`` | JSON data stringified
-``params`` | ``Table[string, string]`` | Accepts ``params`` to be passed as a query string
+``params`` | ``openArray[(string, string)]`` | Accepts ``params`` to be passed as a query string
 
 
 * GET
 ```nim
 # Retrieve
-wcapi.get(endpoint: string; params: Table) # params is optional
+wcapi.get(endpoint: string; params: openArray[(string, string)) # params is optional
 ```
 * POST
 ```nim
@@ -71,7 +71,7 @@ wcapi.put(endpoint: string, data: string)
 * DELETE
 ```nim
 # Delete
-wcapi.delete(endpoint: string; params: Table) # params is optional
+wcapi.delete(endpoint: string; params: openArray[(string, string)) # params is optional
 ```
 * OPTIONS
 ```nim
@@ -89,24 +89,23 @@ Example of returned data for asynchronous API:
 ```nim
 import woocommerce/API
 import asyncdispatch
-import tables
 import json
 
 proc main() {.async.} =
-    let wcapi = AsyncAPI(
-        url="http://example.com",
-        consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-    )
+  let wcapi = AsyncAPI(
+    url="http://example.com",
+    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  )
 
-    response = await wcapi.get("products?status=publish&per_page=10&page=1")
-    echo response.status
-    if response.status == "200 OK":
-        let products = parseJson(response.body)
-        for product in products:
-            echo "SKU:", product["sku"], " NAME:", product["name"]
+  response = await wcapi.get("products?status=publish&per_page=10&page=1")
+  echo response.status
+  if response.status == "200 OK":
+    let products = parseJson(response.body)
+    for product in products:
+      echo "SKU:", product["sku"], " NAME:", product["name"]
 
-    wcapi.close()
+  wcapi.close()
 
 waitFor main()
 ```
@@ -117,27 +116,26 @@ Request with `params` example
 ```nim
 import woocommerce/API
 import asyncdispatch
-import tables
 import json
 
 proc main() {.async.} =
-    let wcapi = AsyncAPI(
-        url="http://example.com",
-        consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-        consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-    )
+  let wcapi = AsyncAPI(
+    url="http://example.com",
+    consumer_key="ck_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    consumer_secret="cs_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  )
 
-    response = await wcapi.get(
-        "products",
-        params = {"status": "publish", "per_page": $(10), "page": $(2)}.toTable
-    )
-    echo response.status
-    if response.status == "200 OK":
-        let products = parseJson(response.body)
-        for product in products:
-            echo "SKU:", product["sku"], " NAME:", product["name"]
+  response = await wcapi.get(
+    "products",
+    params = {"status": "publish", "per_page": $(10), "page": $(2)}
+  )
+  echo response.status
+  if response.status == "200 OK":
+    let products = parseJson(response.body)
+    for product in products:
+      echo "SKU:", product["sku"], " NAME:", product["name"]
 
-    wcapi.close()
+  wcapi.close()
 
 waitFor main()
 ```

@@ -50,13 +50,13 @@ Params       | Type         | Description
 ------------ | ------------ | ------------
 ``endpoint`` | ``string`` | WooCommerce API endpoint, example: ``products`` or ``order/12``
 ``data`` | ``string`` | JSON data stringified
-``params`` | ``openArray[(string, string)]`` | Accepts ``params`` to be passed as a query string
+``params`` | ``seq[(string, string)]`` | Accepts ``params`` to be passed as a query string
 
 
 * GET
 ```nim
 # Retrieve
-wcapi.get(endpoint: string; params: openArray[(string, string)) # params is optional
+wcapi.get(endpoint: string; params: seq[(string, string)) # params is optional
 ```
 * POST
 ```nim
@@ -71,7 +71,7 @@ wcapi.put(endpoint: string, data: string)
 * DELETE
 ```nim
 # Delete
-wcapi.delete(endpoint: string; params: openArray[(string, string)) # params is optional
+wcapi.delete(endpoint: string; params: seq[(string, string)) # params is optional
 ```
 * OPTIONS
 ```nim
@@ -127,7 +127,7 @@ proc main() {.async.} =
 
   response = await wcapi.get(
     "products",
-    params = {"status": "publish", "per_page": $(10), "page": $(2)}
+    params = @{"status": "publish", "per_page": $(10), "page": $(2)}
   )
   echo response.status
   if response.status == "200 OK":

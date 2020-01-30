@@ -79,7 +79,7 @@ proc close*(wcapi: WCAPI | AsyncWCAPI) =
   wcapi.client.close()
 
 
-proc params_to_query_string(params: openArray[(string, string)]): string =
+proc params_to_query_string(params: seq[(string, string)]): string =
   if params.len == 0:
     return ""
 
@@ -95,7 +95,7 @@ proc params_to_query_string(params: openArray[(string, string)]): string =
 proc get*(
   wcapi: WCAPI | AsyncWCAPI,
   endpoint: string,
-  params: openArray[(string, string)] = {:}): Future[Response | AsyncResponse] {.multisync.} =
+  params: seq[(string, string)] = @{:}): Future[Response | AsyncResponse] {.multisync.} =
 
   let query_string = params_to_query_string(params)
   let url = join(
@@ -147,7 +147,7 @@ proc put*(
 proc delete*(
   wcapi: WCAPI | AsyncWCAPI,
   endpoint: string,
-  params: openArray[(string, string)] = {:}): Future[Response | AsyncResponse] {.multisync.} =
+  params: seq[(string, string)] = @{:}): Future[Response | AsyncResponse] {.multisync.} =
 
   let query_string = params_to_query_string(params)
   let url = join(
